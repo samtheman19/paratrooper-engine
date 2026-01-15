@@ -18,6 +18,9 @@
       --accent:#6fd3ff;
       --line:rgba(255,255,255,.08);
       --pill:rgba(255,255,255,.06);
+      --good:#3ddc97;
+      --warn:#ffcc66;
+      --bad:#ff6b6b;
     }
     *{box-sizing:border-box;}
     html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;overflow-x:hidden;}
@@ -26,29 +29,35 @@
     .sub{margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.35;}
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     .spacer{flex:1;}
-    .btn{border:0;background:var(--pill);color:var(--text);padding:10px 14px;border-radius:14px;font-weight:700;cursor:pointer;}
+    .btn{border:0;background:var(--pill);color:var(--text);padding:10px 14px;border-radius:14px;font-weight:800;cursor:pointer;}
     .btnPrimary{background:var(--accent);color:#081018;}
-    .btnSmall{padding:9px 12px;border-radius:12px;font-weight:800;}
+    .btnSmall{padding:9px 12px;border-radius:12px;font-weight:900;}
     .chip{background:var(--pill);padding:10px 12px;border-radius:14px;color:var(--text);display:flex;align-items:center;gap:8px;}
-    select,input{background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:10px 12px;font-size:14px;max-width:100%;}
+    select,input,textarea{background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:10px 12px;font-size:14px;max-width:100%;}
+    textarea{width:100%;min-height:70px;resize:vertical;}
     .card{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:22px;padding:16px;margin:14px 0;}
     .cardTitle{font-size:18px;font-weight:900;margin:0 0 6px;}
     .muted{color:var(--muted);}
     .hr{height:1px;background:var(--line);margin:14px 0;}
     .bigTime{font-size:52px;font-weight:900;letter-spacing:1px;line-height:1;margin:8px 0 10px;}
     .tiny{font-size:12px;color:var(--muted);}
+    .pill{background:rgba(255,255,255,.04);border:1px solid var(--line);padding:10px 12px;border-radius:14px;}
+    .statusDot{width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:8px;vertical-align:middle;}
+    .statusGood{background:var(--good);}
+    .statusWarn{background:var(--warn);}
+    .statusBad{background:var(--bad);}
 
     .dayTitle{font-size:22px;font-weight:900;margin:0 0 10px;}
     .exTitle{font-size:20px;font-weight:900;margin:10px 0 6px;}
     .exMeta{color:var(--muted);font-size:13px;margin:0 0 10px;}
 
-    .tableHead{display:grid;grid-template-columns:38px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 40px 44px;gap:8px;align-items:center;color:var(--muted);font-size:12px;font-weight:800;margin:8px 0 6px;}
+    .tableHead{display:grid;grid-template-columns:38px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 40px 44px;gap:8px;align-items:center;color:var(--muted);font-size:12px;font-weight:900;margin:8px 0 6px;}
     .setRow{display:grid;grid-template-columns:38px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 40px 44px;gap:8px;align-items:center;margin:8px 0;}
     .setRow > *{min-width:0;}
     .setNum{font-weight:900;}
     .pillInput{
       width:100%;height:38px;padding:8px 10px;border-radius:14px;
-      border:1px solid var(--line);background:rgba(255,255,255,.04);font-weight:800;
+      border:1px solid var(--line);background:rgba(255,255,255,.04);font-weight:900;
     }
     .pillRead{
       width:100%;height:38px;padding:8px 10px;border-radius:14px;border:1px solid var(--line);
@@ -75,9 +84,15 @@
     .mobDone{display:flex;justify-content:center;}
     .mobChk{width:22px;height:22px;accent-color:var(--accent);}
 
+    .twoCol{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .threeCol{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+    .label{font-weight:900;color:var(--muted);font-size:12px;margin-bottom:6px;}
+    .runGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+
     @media (max-width: 380px){
       .tableHead,.setRow{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 36px 44px;}
       .restBox{width:36px;}
+      .twoCol,.threeCol,.runGrid{grid-template-columns:1fr;}
     }
   </style>
 </head>
@@ -86,7 +101,7 @@
   <div class="app">
     <h1>Paratrooper Engine</h1>
     <div class="sub">
-      Run speed + strength + HIIT + mobility • Built for selection prep • Saves on this device
+      Speed + strength + conditioning • Readiness-based progression • Saves on this device
     </div>
 
     <div class="row">
@@ -108,6 +123,71 @@
       <button class="btn btnPrimary" id="resetWeekBtn">Reset week</button>
     </div>
 
+    <!-- Readiness -->
+    <div class="card" id="readinessCard">
+      <div class="row">
+        <div class="cardTitle">Readiness check</div>
+        <div class="spacer"></div>
+        <div class="tiny" id="readinessDate"></div>
+      </div>
+
+      <div class="threeCol" style="margin-top:10px;">
+        <div class="pill">
+          <div class="label">Sleep (1–5)</div>
+          <select id="sleepSelect">
+            <option value="1">1 (bad)</option>
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="5">5 (great)</option>
+          </select>
+        </div>
+        <div class="pill">
+          <div class="label">Soreness (1–5)</div>
+          <select id="sorenessSelect">
+            <option value="1" selected>1 (fresh)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (wrecked)</option>
+          </select>
+        </div>
+        <div class="pill">
+          <div class="label">Stress (1–5)</div>
+          <select id="stressSelect">
+            <option value="1" selected>1 (low)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (high)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="twoCol" style="margin-top:10px;">
+        <div class="pill">
+          <div class="label">Motivation (1–5)</div>
+          <select id="motivationSelect">
+            <option value="1">1 (none)</option>
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="5">5 (high)</option>
+          </select>
+        </div>
+        <div class="pill">
+          <div class="label">RHR delta (optional)</div>
+          <input id="rhrDeltaInput" type="number" inputmode="numeric" placeholder="+0" />
+          <div class="tiny">If your resting HR is up (e.g. +6), enter 6.</div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div id="readinessStatus"></div>
+    </div>
+
+    <!-- Workout timer -->
     <div class="card">
       <div class="row">
         <div>
@@ -126,6 +206,7 @@
       </div>
     </div>
 
+    <!-- Day plan -->
     <div class="card">
       <div class="dayTitle" id="dayTitle">—</div>
 
@@ -139,6 +220,7 @@
 
       <div class="hr"></div>
 
+      <!-- Mobility -->
       <div class="card" style="margin:0;padding:14px;">
         <div class="cardTitle">Mobility</div>
         <div class="muted" style="margin-bottom:10px;">Start counts down, tick when done.</div>
@@ -147,7 +229,7 @@
     </div>
 
     <div class="tiny" style="margin-top:18px;opacity:.7;">
-      Build: PE v1
+      Build: PE v2
     </div>
     <div class="tiny" style="margin-top:8px;">
       Install: Safari → Share → Add to Home Screen · Offline works after first load.
