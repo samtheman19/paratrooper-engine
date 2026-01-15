@@ -1,5 +1,5 @@
 /* Paratrooper Engine SW – bump version when you deploy */
-const CACHE = "paratrooper-engine-cache-v1";
+const CACHE = "paratrooper-engine-cache-v2";
 
 const ASSETS = [
   "./",
